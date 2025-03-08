@@ -91,13 +91,9 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>Nice Messages from Nice Folk</h1>
+        <h1>Every time I'd like to call</h1>
         <p>Messages from calling <a className="hailmix-link" href="tel:+1559HAILMIX">+1 (559) HAILMIX</a></p>
-        <button onClick={fetchRecordings} disabled={loading}>
-          {loading ? 'Refreshing...' : 'Refresh'}
-        </button>
       </header>
-      
       <main>
         {error && <div className="error-message">{error}</div>}
         
