@@ -20,7 +20,7 @@ function App() {
   const [currentlyPlaying, setCurrentlyPlaying] = useState<string | null>(null);
 
   // Get API URL from environment variables with fallback
-  const apiUrl = 'https://abcdefgh-mbp.tail97dd03.ts.net/'
+  const apiUrl = 'https://abcdefgh-mbp.tail97dd03.ts.net'
   
   // Fetch recordings from the backend
   const fetchRecordings = useCallback(async () => {
