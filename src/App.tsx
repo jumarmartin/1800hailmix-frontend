@@ -81,7 +81,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>Voice Recordings</h1>
+        <h1>Nice Messages from Nice Folk</h1>
         <p>Messages from calling <a className="hailmix-link" href="tel:+1559HAILMIX">+1 (559) HAILMIX</a></p>
         <button onClick={fetchRecordings} disabled={loading}>
           {loading ? 'Refreshing...' : 'Refresh'}
