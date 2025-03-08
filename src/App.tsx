@@ -32,7 +32,17 @@ function App() {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       
-      const data = await response.json();
+      const data: Recording[] = await response.json();
+      data.sort((a, b) => {
+        let aReceivedAt = new Date(a.receivedAt)
+        let bReceivedAt = new Date(b.receivedAt)
+
+        if (aReceivedAt < bReceivedAt) {
+          return Infinity
+        }
+        return -Infinity
+      })
+      
       setRecordings(data);
       setError(null);
     } catch (err) {
