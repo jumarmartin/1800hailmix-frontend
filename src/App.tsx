@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './App.css';
 
 // Interface for recording data structure
@@ -9,6 +9,8 @@ interface Recording {
   mp3FileName: string;
   filePath: string;
   fileSize: number;
+  title: string;
+  transcription: string;
 }
 
 function App() {
@@ -17,11 +19,14 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const [currentlyPlaying, setCurrentlyPlaying] = useState<string | null>(null);
 
+  // Get API URL from environment variables with fallback
+  const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8080';
+  
   // Fetch recordings from the backend
-  const fetchRecordings = async () => {
+  const fetchRecordings = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:8080/api/recordings');
+      const response = await fetch(`${apiUrl}/api/recordings`);
       
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -36,8 +41,8 @@ function App() {
     } finally {
       setLoading(false);
     }
-  };
-
+  }, [apiUrl]);
+  
   // Fetch recordings on component mount and periodically
   useEffect(() => {
     fetchRecordings();
@@ -47,7 +52,7 @@ function App() {
     
     // Clean up interval on component unmount
     return () => clearInterval(intervalId);
-  }, []);
+  }, [fetchRecordings]);
 
   // Format date string
   const formatDate = (dateString: string) => {
@@ -77,7 +82,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <h1>Voice Recordings</h1>
-        <p>Phone messages received via Mail.app</p>
+        <p>Messages from calling <a className="hailmix-link" href="tel:+1559HAILMIX">+1 (559) HAILMIX</a></p>
         <button onClick={fetchRecordings} disabled={loading}>
           {loading ? 'Refreshing...' : 'Refresh'}
         </button>
@@ -88,18 +93,19 @@ function App() {
         
         {loading && recordings.length === 0 && <div className="loading">Loading recordings...</div>}
         
-        {!loading && recordings.length === 0 && (
+        {!loading && !error && recordings.length === 0 && (
           <div className="no-recordings">
-            <p>No recordings found.</p>
-            <p>Send an email with an MP3 attachment to see it appear here.</p>
+            <p>No messages found.</p>
+            <p>Call <a className="hailmix-link" href="tel:+1559HAILMIX">+1 (559) HAILMIX</a> to leave a message.</p>
           </div>
         )}
+      
         
         <div className="recording-list">
           {recordings.map((recording) => (
             <div key={recording.id} className="recording-card">
               <div className="recording-header">
-                <h2>{recording.id}</h2>
+                <h2>{recording.title}</h2>
                 <div className="recording-metadata">
                   <span>From: {recording.phoneNumber}</span>
                   <span>Received: {formatDate(recording.receivedAt)}</span>
@@ -113,7 +119,7 @@ function App() {
                       controls 
                       autoPlay 
                       onEnded={handleAudioEnd}
-                      src={`http://localhost:8080/api/play/${recording.id}`}
+                      src={`${apiUrl}/api/play/${recording.id}`}
                     />
                     <button 
                       className="stop-button"
@@ -130,6 +136,13 @@ function App() {
                     Play Message
                   </button>
                 )}
+                <details className="recording-transcription">
+                  <summary>View Transcription</summary>
+                  <pre className="transcription-text">
+                    {recording.transcription}
+                  </pre>
+                </details>
+
               </div>
             </div>
           ))}
