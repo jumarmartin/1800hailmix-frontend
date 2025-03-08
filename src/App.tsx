@@ -20,7 +20,7 @@ function App() {
   const [currentlyPlaying, setCurrentlyPlaying] = useState<string | null>(null);
 
   // Get API URL from environment variables with fallback
-  const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8080';
+  const apiUrl = 'https://abcdefgh-mbp.tail97dd03.ts.net/'
   
   // Fetch recordings from the backend
   const fetchRecordings = useCallback(async () => {
@@ -42,7 +42,7 @@ function App() {
       setLoading(false);
     }
   }, [apiUrl]);
-  
+
   // Fetch recordings on component mount and periodically
   useEffect(() => {
     fetchRecordings();
